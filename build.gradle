@@ -1,0 +1,25 @@
+plugins {
+    id 'java'
+    id 'groovy'
+    id 'maven'
+}
+
+group 'gradleDatabase'
+version '0.1'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile gradleApi()
+
+    // https://mvnrepository.com/artifact/junit/junit
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+
+    //For test
+    // https://mvnrepository.com/artifact/postgresql/postgresql
+    testCompile group: 'postgresql', name: 'postgresql', version: '9.0-801.jdbc4'
+
+
+}
