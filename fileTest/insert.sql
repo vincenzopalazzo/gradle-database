@@ -1,0 +1,1 @@
+INSERT INTO Azienda values (1, 'qwertyui', 'Italy', null);

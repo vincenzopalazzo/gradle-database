@@ -1,17 +1,18 @@
 package io.vincentpalazzo.gradledatabase.persistence;
 
+import org.hsqldb.cmdline.SqlFile;
+import org.hsqldb.cmdline.SqlToolError;
+
+import java.io.File;
+import java.io.IOException;
 import java.sql.*;
 
 /**
  * @author https://github.com/vincenzopalazzo
  */
-public class DataSurce {
+public class DataSource {
 
     private Connection connection;
-
-    public Connection getConnection() {
-        return connection;
-    }
 
     public boolean connectionDatabase(String driverPackage, String url, String username, String password){
         if((url == null || url.isEmpty()) ||
@@ -44,6 +45,7 @@ public class DataSurce {
         try {
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.executeUpdate();
+            connection.close();
             return true;
         } catch (SQLException e) {
             throw new IllegalArgumentException("Exception generate is: " + e.getLocalizedMessage());
@@ -62,10 +64,41 @@ public class DataSurce {
         try {
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.executeUpdate();
+            connection.close();
             return true;
         } catch (SQLException e) {
             throw new IllegalArgumentException("Exception generate is: " + e.getLocalizedMessage());
         }
+    }
+
+    public boolean createTableWithFileSql(File fileSql, boolean continueWithError) {
+        if(fileSql == null || !fileSql.exists()){
+            //TODO improve error
+            throw new IllegalArgumentException("Input argument not valid");
+        }
+        try {
+            SqlFile sqlFile = new SqlFile(fileSql);
+            sqlFile.setConnection(connection);
+            sqlFile.setContinueOnError(continueWithError);
+            sqlFile.execute();
+            return true;
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Exception generate is: " + e.getLocalizedMessage());
+        } catch (SqlToolError sqlToolError) {
+            throw new IllegalArgumentException("Exception generate is: " + sqlToolError.getLocalizedMessage());
+        } catch (SQLException e) {
+            throw new IllegalArgumentException("Exception generate is: " + e.getLocalizedMessage());
+        }finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                throw new IllegalArgumentException("Exception generate is: " + e.getLocalizedMessage());
+            }
+        }
+    }
+
+    public boolean insertIntoDatabaseFromFile(File fileSql, boolean continueWithError) {
+        return createTableWithFileSql(fileSql, continueWithError);
     }
 
     private boolean registerDriver(String driverPackage) {
@@ -74,6 +107,7 @@ public class DataSurce {
             throw new IllegalArgumentException("Parameter function not valid");
         }
         Driver driver = null;
+
         try {
             driver = (Driver) ClassLoader.getSystemClassLoader().loadClass(driverPackage).newInstance();
         } catch (InstantiationException e) {

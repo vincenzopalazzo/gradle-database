@@ -1,5 +1,6 @@
 package task
 
+import io.vincentpalazzo.gradledatabase.task.CreateDatabaseTask
 import junit.framework.TestCase
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
@@ -15,7 +16,7 @@ class TestTaskCreateDB {
         Project project = ProjectBuilder.builder().build()
         project.getPlugins().apply'io.vincentpalazzo.gradledatabase'
 
-       // assertTrue(project.tasks.createDatabase instanceof CreateDatabaseTask)
-        TestCase.assertTrue(false)
+       TestCase.assertTrue(project.tasks.createDatabase instanceof CreateDatabaseTask)
+       // TestCase.assertTrue(false)
     }
 }

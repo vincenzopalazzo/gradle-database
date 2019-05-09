@@ -1,0 +1,7 @@
+#file ide
+.idea/
+*.iml
+#Dir gradle
+.gradle/
+out/
+build/

@@ -12,6 +12,26 @@ public class GradleDatabaseExstension {
     private String nameDatabase;
     private String driver;
     private String nameJar;
+    //For create table into db
+    private String pathFile;
+    //For insert inito db
+    private String patFileInsert;
+
+    public String getPatFileInsert() {
+        return patFileInsert;
+    }
+
+    public void setPatFileInsert(String patFileInsert) {
+        this.patFileInsert = patFileInsert;
+    }
+
+    public String getPathFile() {
+        return pathFile;
+    }
+
+    public void setPathFile(String pathFile) {
+        this.pathFile = pathFile;
+    }
 
     public String getNameJar() {
         return nameJar;
