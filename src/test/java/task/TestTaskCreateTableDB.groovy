@@ -9,13 +9,13 @@ import org.junit.Test
 /**
  * @author https://github.com/vincenzopalazzo
  */
-class TestTaskCreateDB {
+class TestTaskCreateTableDB {
 
     @Test
     void testTaskCreateDbFirst(){
         Project project = ProjectBuilder.builder().build()
         project.getPlugins().apply'io.vincentpalazzo.gradledatabase'
 
-       TestCase.assertTrue(project.tasks.createDatabase instanceof GradleCreateDatabaseTask)
+        TestCase.assertTrue(project.tasks.createTable instanceof GradleCreateDatabaseTask)
     }
 }

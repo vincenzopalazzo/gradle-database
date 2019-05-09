@@ -3,17 +3,20 @@ package io.vincentpalazzo.gradledatabase.task;
 import io.vincentpalazzo.gradledatabase.exstension.GradleDatabaseExstension;
 import io.vincentpalazzo.gradledatabase.persistence.DataSource;
 import org.gradle.api.DefaultTask;
-import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.tasks.TaskAction;
-
-import java.util.Iterator;
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.Set;
+
 
 /**
  * @author https://github.com/vincenzopalazzo
  */
-public class CreateDatabaseTask extends DefaultTask {
+public class GradleCreateDatabaseTask extends DefaultTask {
+
+    private URLClassLoader classLoaderJar;
 
     @TaskAction
     public void createAction() {
@@ -27,16 +30,13 @@ public class CreateDatabaseTask extends DefaultTask {
         String nameDatabase = project.getNameDatabase();
         String nameJar = project.getNameJar();
 
-        if (findDependecyFileJarForDriver(nameJar)) {
-            System.out.println("Jar findend");
-        } else {
-            System.out.println("Jar not found");
-        }
+        findDependecyFileJarForDriver(nameJar);
 
         DataSource dataSource = new DataSource();
-        if (dataSource.connectionDatabase(driverClass, url, username, password)) {
-            if (dataSource.createDatabese(nameDatabase)) {
-                System.out.println("Database " + nameDatabase + " created");
+        if (dataSource.connectionDatabase(classLoaderJar, driverClass, url, username, password)) {
+            if (dataSource.createDatabese(nameDatabase.toLowerCase())) {
+                System.out.println("Database " + nameDatabase.toLowerCase() + " created");
+                dataSource.closeConnectionDatabase();
             }
         }
     }
@@ -46,20 +46,19 @@ public class CreateDatabaseTask extends DefaultTask {
             throw new IllegalArgumentException("The input parameter is null");
         }
 
-        Iterator<Configuration> iterable = getProject().getConfigurations().iterator();
-        boolean finded = false;
-
-        while ((!finded) || (iterable.hasNext())) {
-            Configuration configuration = iterable.next();
-            Set<File> filesSet = configuration.resolve();
-            for (File file : filesSet) {
-                String nameFile = file.getName();
-                if (nameFile.contains(nameJar)) {
-                    //Now?;
-                    finded = true;
+        Set<File> classpath = getProject().getConfigurations().getByName("compileClasspath").getFiles();
+        for(File file : classpath){
+            if(file.getName().contains(nameJar)){
+                System.out.println("Contains dependende " + file.getName());
+                try {
+                    URLClassLoader classLoader = new URLClassLoader(new URL[]{file.toURI().toURL()});
+                    this.classLoaderJar = classLoader;
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
                 }
             }
         }
-        return finded;
+
+        return true;
     }
 }

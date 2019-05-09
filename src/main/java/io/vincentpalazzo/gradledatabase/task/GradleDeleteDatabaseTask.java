@@ -14,7 +14,7 @@ import java.util.Set;
 /**
  * @author https://github.com/vincenzopalazzo
  */
-public class GradleInsertValueIntoDatabaseTask extends DefaultTask {
+public class GradleDeleteDatabaseTask extends DefaultTask {
 
     private URLClassLoader classLoaderJar;
 
@@ -22,9 +22,6 @@ public class GradleInsertValueIntoDatabaseTask extends DefaultTask {
     public void createAction() {
 
         GradleDatabaseExstension project = getProject().getExtensions().findByType(GradleDatabaseExstension.class);
-        String pathFileInsert = project.getPatFileInsert();
-
-        File fileSql = new File(pathFileInsert); //The file with sql createTabe
 
         String url = project.getUrl();
         String driverClass = project.getDriver(); //The drive name database is different
@@ -33,14 +30,14 @@ public class GradleInsertValueIntoDatabaseTask extends DefaultTask {
         String nameDatabase = project.getNameDatabase();
         String nameJar = project.getNameJar();
 
-        DataSource dataSource = new DataSource();
         findDependecyFileJarForDriver(nameJar);
-        if (dataSource.connectionDatabase(classLoaderJar, driverClass, url + nameDatabase.toLowerCase(), username, password)) {
-            if (dataSource.insertIntoDatabaseFromFile(fileSql, false)) {
-                System.out.println("The values are insert into " + nameDatabase.toLowerCase() + " db");
+
+        DataSource dataSource = new DataSource();
+        if (dataSource.connectionDatabase(classLoaderJar, driverClass, url, username, password)) {
+            if (dataSource.deleteDatabese(nameDatabase.toLowerCase())) {
+                System.out.println("Database " + nameDatabase.toLowerCase() + " deleted");
+                dataSource.closeConnectionDatabase();
             }
-            dataSource.closeConnectionDatabase();
-            //TODO more information
         }
     }
 

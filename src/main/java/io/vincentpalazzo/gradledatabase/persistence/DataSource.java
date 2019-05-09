@@ -5,6 +5,7 @@ import org.hsqldb.cmdline.SqlToolError;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLClassLoader;
 import java.sql.*;
 
 /**
@@ -14,15 +15,13 @@ public class DataSource {
 
     private Connection connection;
 
-    public boolean connectionDatabase(String driverPackage, String url, String username, String password){
-        if((url == null || url.isEmpty()) ||
-                (username == null || username.isEmpty()) ||
-                (password == null || password.isEmpty())){
+    public boolean connectionDatabase(URLClassLoader classLoaderJar, String driverPackage, String url, String username, String password){
+        if((url == null || url.isEmpty()) || (username == null || username.isEmpty()) || (password == null || password.isEmpty())){
             //TODO create a exeption more specific
-            throw new IllegalArgumentException("Parameter function not valid");
+            throw new IllegalArgumentException("Parameter function not valid the value is: url = " + url + " username = " + username + " password =  " + password);
         }
 
-        registerDriver(driverPackage);
+        registerDriver(classLoaderJar, driverPackage);
 
         try {
             connection = DriverManager.getConnection(url, username, password);
@@ -45,7 +44,6 @@ public class DataSource {
         try {
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.executeUpdate();
-            connection.close();
             return true;
         } catch (SQLException e) {
             throw new IllegalArgumentException("Exception generate is: " + e.getLocalizedMessage());
@@ -64,7 +62,6 @@ public class DataSource {
         try {
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.executeUpdate();
-            connection.close();
             return true;
         } catch (SQLException e) {
             throw new IllegalArgumentException("Exception generate is: " + e.getLocalizedMessage());
@@ -80,6 +77,7 @@ public class DataSource {
             SqlFile sqlFile = new SqlFile(fileSql);
             sqlFile.setConnection(connection);
             sqlFile.setContinueOnError(continueWithError);
+            sqlFile.setAutoClose(true);
             sqlFile.execute();
             return true;
         } catch (IOException e) {
@@ -88,12 +86,6 @@ public class DataSource {
             throw new IllegalArgumentException("Exception generate is: " + sqlToolError.getLocalizedMessage());
         } catch (SQLException e) {
             throw new IllegalArgumentException("Exception generate is: " + e.getLocalizedMessage());
-        }finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                throw new IllegalArgumentException("Exception generate is: " + e.getLocalizedMessage());
-            }
         }
     }
 
@@ -101,24 +93,37 @@ public class DataSource {
         return createTableWithFileSql(fileSql, continueWithError);
     }
 
-    private boolean registerDriver(String driverPackage) {
+    public boolean closeConnectionDatabase(){
+        try {
+            if(!connection.isClosed()){
+                connection.close();
+                return true;
+            }
+        } catch (SQLException e) {
+            throw new IllegalArgumentException("Exception generate is: " + e.getLocalizedMessage());
+        }
+        return false;
+    }
+
+    private boolean registerDriver(URLClassLoader classLoaderJar, String driverPackage) {
         if(driverPackage == null || driverPackage.isEmpty()){
             //TODO create a exeption more specific
-            throw new IllegalArgumentException("Parameter function not valid");
+            throw new IllegalArgumentException("Parameter function not valid the value is driverPackage = " + driverPackage);
         }
         Driver driver = null;
 
         try {
-            driver = (Driver) ClassLoader.getSystemClassLoader().loadClass(driverPackage).newInstance();
+            //driver = (Driver) ClassLoader.getSystemClassLoader().loadClass(driverPackage).newInstance();
+            driver = (Driver) classLoaderJar.loadClass(driverPackage).newInstance();
         } catch (InstantiationException e) {
             //TODO create a exeption more specific
-            throw new IllegalArgumentException("Exception generated is: " + e.getLocalizedMessage());
+            throw new IllegalArgumentException("Exception generated is: " + e.getMessage());
         } catch (IllegalAccessException e) {
             //TODO create a exeption more specific
-            throw new IllegalArgumentException("Exception generated is: " + e.getLocalizedMessage());
+            throw new IllegalArgumentException("Exception generated is: " + e.getMessage());
         } catch (ClassNotFoundException e) {
             //TODO create a exeption more specific
-            throw new IllegalArgumentException("Exception generated is: " + e.getLocalizedMessage());
+            throw new IllegalArgumentException("Exception generated is: " + e.getMessage());
         }
 
         try {
