@@ -1,6 +1,6 @@
 # gradle-database
 
-The gradle-project is the simple plugin for gradle for operation with database.
+The gradle-database is the simple plugin for gradle for operation with database.
 
 ## Getting Started
 
