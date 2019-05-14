@@ -4,27 +4,25 @@ The gradle-database is the simple plugin for gradle for operation with database.
 
 ## Getting Started
 
-The project is in versione 0.1 alpha, so for using you must install in the your local maven reposity.
+The project is in versione 0.2 beta and this is reference on the [site gradle](https://plugins.gradle.org/plugin/io.vincentpalazzo.gradledatabase)
 
-- Clone project
+- Import the dependence
   ```
-    https://github.com/vincenzopalazzo/gradle-database.git
-  
-    gradle compileAndInstall
+    buildscript {
+        repositories {
+          maven {
+            url "https://plugins.gradle.org/m2/"
+          }
+        }
+        dependencies {
+          classpath "gradle.plugin.gradleDatabase:database-gradle-plugins:0.1"
+        }
+      }
+      
+      apply plugin: "io.vincentpalazzo.gradledatabase"
   ```
-- Import the plugin into your project
+- Configure the plugin with data of the Database
   ```
-  buildscript {
-    repositories {
-        mavenLocal()
-    }
-    dependencies {
-        classpath 'gradleDatabase:database-gradle-plugins:0.1'
-    }
-  }
-  
-  apply plugin: 'io.vincentpalazzo.gradledatabase'
-  
   settingDatabase {
     url = 'yourUrl'
     username = 'yourUsername'
