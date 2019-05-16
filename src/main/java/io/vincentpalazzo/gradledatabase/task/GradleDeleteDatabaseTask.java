@@ -33,7 +33,7 @@ public class GradleDeleteDatabaseTask extends DefaultTask {
         findDependecyFileJarForDriver(nameJar);
 
         DataSource dataSource = new DataSource();
-        if (dataSource.connectionDatabase(classLoaderJar, driverClass, url, username, password)) {
+        if (dataSource.connectionDatabase(classLoaderJar, driverClass.trim(), url.trim(), username, password)) {
             if (dataSource.deleteDatabese(nameDatabase.toLowerCase())) {
                 System.out.println("Database " + nameDatabase.toLowerCase() + " deleted");
                 dataSource.closeConnectionDatabase();

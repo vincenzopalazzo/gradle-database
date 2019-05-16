@@ -18,4 +18,5 @@ class TestTaskCreateDB {
 
        TestCase.assertTrue(project.tasks.createDatabase instanceof GradleCreateDatabaseTask)
     }
+
 }

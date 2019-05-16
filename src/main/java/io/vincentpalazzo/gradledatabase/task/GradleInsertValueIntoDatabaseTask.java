@@ -22,7 +22,7 @@ public class GradleInsertValueIntoDatabaseTask extends DefaultTask {
     public void createAction() {
 
         GradleDatabaseExstension project = getProject().getExtensions().findByType(GradleDatabaseExstension.class);
-        String pathFileInsert = project.getPatFileInsert();
+        String pathFileInsert = project.getPathFileInsert();
 
         File fileSql = new File(pathFileInsert); //The file with sql createTabe
 
@@ -35,7 +35,7 @@ public class GradleInsertValueIntoDatabaseTask extends DefaultTask {
 
         DataSource dataSource = new DataSource();
         findDependecyFileJarForDriver(nameJar);
-        if (dataSource.connectionDatabase(classLoaderJar, driverClass, url + nameDatabase.toLowerCase(), username, password)) {
+        if (dataSource.connectionDatabase(classLoaderJar, driverClass.trim(), url.trim() + nameDatabase.toLowerCase(), username, password)) {
             if (dataSource.insertIntoDatabaseFromFile(fileSql, false)) {
                 System.out.println("The values are insert into " + nameDatabase.toLowerCase() + " db");
             }

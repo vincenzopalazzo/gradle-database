@@ -33,7 +33,8 @@ public class GradleCreateDatabaseTask extends DefaultTask {
         findDependecyFileJarForDriver(nameJar);
 
         DataSource dataSource = new DataSource();
-        if (dataSource.connectionDatabase(classLoaderJar, driverClass, url, username, password)) {
+
+        if (dataSource.connectionDatabase(classLoaderJar, driverClass.trim(), url.trim(), username, password)) {
             if (dataSource.createDatabese(nameDatabase.toLowerCase())) {
                 System.out.println("Database " + nameDatabase.toLowerCase() + " created");
                 dataSource.closeConnectionDatabase();

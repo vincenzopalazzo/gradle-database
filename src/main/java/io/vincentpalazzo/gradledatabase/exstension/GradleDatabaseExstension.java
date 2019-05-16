@@ -15,14 +15,14 @@ public class GradleDatabaseExstension {
     //For create table into db
     private String pathFile;
     //For insert inito db
-    private String patFileInsert;
+    private String pathFileInsert;
 
-    public String getPatFileInsert() {
-        return patFileInsert;
+    public String getPathFileInsert() {
+        return pathFileInsert;
     }
 
-    public void setPatFileInsert(String patFileInsert) {
-        this.patFileInsert = patFileInsert;
+    public void setPathFileInsert(String pathFileInsert) {
+        this.pathFileInsert = pathFileInsert;
     }
 
     public String getPathFile() {

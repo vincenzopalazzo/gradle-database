@@ -21,14 +21,17 @@ public class DataSource {
             throw new IllegalArgumentException("Parameter function not valid the value is: url = " + url + " username = " + username + " password =  " + password);
         }
 
-        registerDriver(classLoaderJar, driverPackage);
-
+        if (!registerDriver(classLoaderJar, driverPackage)){
+            System.out.println("Driver not register");
+        }
         try {
             connection = DriverManager.getConnection(url, username, password);
             return true;
         } catch (SQLException e) {
             //TODO create a exeption more specific
-            throw new IllegalArgumentException("Exception generated is: " + e.getLocalizedMessage());
+            e.printStackTrace();
+            throw new IllegalArgumentException("Exception generated is: " + e.getLocalizedMessage() + " \nat the url " +
+                    url + " username " + username + " password " + password);
         }
     }
 
@@ -110,11 +113,12 @@ public class DataSource {
             //TODO create a exeption more specific
             throw new IllegalArgumentException("Parameter function not valid the value is driverPackage = " + driverPackage);
         }
-        Driver driver = null;
+        Driver driver;
 
         try {
             //driver = (Driver) ClassLoader.getSystemClassLoader().loadClass(driverPackage).newInstance();
             driver = (Driver) classLoaderJar.loadClass(driverPackage).newInstance();
+            System.out.println("Driver: " + driver);
         } catch (InstantiationException e) {
             //TODO create a exeption more specific
             throw new IllegalArgumentException("Exception generated is: " + e.getMessage());
@@ -128,6 +132,7 @@ public class DataSource {
 
         try {
             DriverManager.registerDriver(driver);
+            System.out.println("Driver register");
             return true;
         } catch (SQLException e) {
             //TODO create a exeption more specific

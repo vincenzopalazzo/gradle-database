@@ -35,7 +35,7 @@ public class GradleCrateTablesIntoDatabeseTask extends DefaultTask {
         DataSource dataSource = new DataSource();
 
         findDependecyFileJarForDriver(nameJar);
-        if (dataSource.connectionDatabase(classLoaderJar, driverClass, url + nameDatabase.toLowerCase(), username, password)) {
+        if (dataSource.connectionDatabase(classLoaderJar, driverClass.trim(), url.trim() + nameDatabase.toLowerCase(), username, password)) {
             if (dataSource.createTableWithFileSql(fileSql, true)) {
                 System.out.println("The tables are created");
                 dataSource.closeConnectionDatabase();

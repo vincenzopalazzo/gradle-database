@@ -28,7 +28,7 @@ public class TestDataSource {
         dataSource = new DataSource();
         pathJarDriver = System.getProperty("user.dir");
         System.out.println(pathJarDriver);
-        File file = new File(pathJarDriver + "fileTest/postgresql-42.2.5.jre6.jar");
+        File file = new File(pathJarDriver + "fileTest/postgresql-42.2.5.jar");
         try {
             classLoader = new URLClassLoader(new URL[]{file.toURI().toURL()});
         } catch (MalformedURLException e) {
