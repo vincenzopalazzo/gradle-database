@@ -31,7 +31,7 @@ The project is in versione 0.2 beta and this is reference on the [site gradle](h
     driver = 'package driver' //an example org.postgresql.Driver
     nameJar = 'name dependence' //an example postgres
     pathFile = 'src/main/resources/db/schema.sql'
-    patFileInsert = 'src/main/resources/db/insert.sql'
+    pathFileInsert = 'src/main/resources/db/insert.sql'
   }
   ```
   
