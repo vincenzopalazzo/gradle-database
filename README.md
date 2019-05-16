@@ -15,7 +15,7 @@ The project is in versione 0.2 beta and this is reference on the [site gradle](h
           }
         }
         dependencies {
-          classpath "gradle.plugin.gradleDatabase:database-gradle-plugins:0.1"
+          classpath "gradle.plugin.gradleDatabase:database-gradle-plugins:0.3"
         }
       }
       
