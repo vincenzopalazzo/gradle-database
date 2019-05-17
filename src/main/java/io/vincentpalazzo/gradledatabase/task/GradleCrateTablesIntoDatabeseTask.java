@@ -1,67 +1,82 @@
+/**
+ * MIT License
+ *
+ * Copyright (c) 2019 Vincent Palazzo vincenzopalazzodev@gmail.com
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package io.vincentpalazzo.gradledatabase.task;
 
-import io.vincentpalazzo.gradledatabase.exstension.GradleDatabaseExstension;
+import io.vincentpalazzo.gradledatabase.Constant;
+import io.vincentpalazzo.gradledatabase.exception.DataSurceException;
 import io.vincentpalazzo.gradledatabase.persistence.DataSource;
-import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
-
-import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.Set;
 
 /**
  * @author https://github.com/vincenzopalazzo
  */
-public class GradleCrateTablesIntoDatabeseTask extends DefaultTask {
+public class GradleCrateTablesIntoDatabeseTask extends AbstractTaskGradleDatabase {
 
-    private URLClassLoader classLoaderJar;
+    private final String loggerTag = this.getClass().getCanonicalName();
+
+    public GradleCrateTablesIntoDatabeseTask() {
+        super();
+    }
 
     @TaskAction
     public void createAction() {
-
-        GradleDatabaseExstension project = getProject().getExtensions().findByType(GradleDatabaseExstension.class);
-        String pathFile = project.getPathFile();
-
-        File fileSql = new File(pathFile); //The file with sql createTabe
-        String url = project.getUrl();
-        String driverClass = project.getDriver(); //The drive name database is different
-        String username = project.getUsername();
-        String password = project.getPassword();
-        String nameDatabase = project.getNameDatabase();
-        String nameJar = project.getNameJar();
+        init();
 
         DataSource dataSource = new DataSource();
 
-        findDependecyFileJarForDriver(nameJar);
-        if (dataSource.connectionDatabase(classLoaderJar, driverClass.trim(), url.trim() + nameDatabase.toLowerCase(), username, password)) {
-            if (dataSource.createTableWithFileSql(fileSql, true)) {
-                System.out.println("The tables are created");
-                dataSource.closeConnectionDatabase();
-            }
-            //TODO more information
-        }
-    }
+        if(jar.isPresent()){
+            messageInfo(loggerTag, "Jar findend");
+            try {
+                classLoaderJar = new URLClassLoader(new URL[]{jar.get().toURI().toURL()});
 
-    private boolean findDependecyFileJarForDriver(String nameJar) {
-        if (nameJar == null || nameJar.isEmpty()) {
-            throw new IllegalArgumentException("The input parameter is null");
-        }
+                if(levelLog.equalsIgnoreCase(Constant.DEBUG_TAG)){ messageDebug(loggerTag, "Classloader string: " + classLoaderJar.toString());}
 
-        Set<File> classpath = getProject().getConfigurations().getByName("compileClasspath").getFiles();
-        for(File file : classpath){
-            if(file.getName().contains(nameJar)){
-                System.out.println("Contains dependende " + file.getName());
-                try {
-                    URLClassLoader classLoader = new URLClassLoader(new URL[]{file.toURI().toURL()});
-                    this.classLoaderJar = classLoader;
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
+                if (dataSource.connectionDatabase(classLoaderJar, driverClass.trim(), url.trim() + nameDatabase.toLowerCase(), username, password)) {
+
+                    if(levelLog.equalsIgnoreCase(Constant.DEBUG_TAG)){ messageDebug(loggerTag, "Connection with database is ok");}
+
+                    if (dataSource.createTableWithFileSql(fileSql, true)) {
+                        if(levelLog.equalsIgnoreCase(Constant.DEBUG_TAG)){messageDebug(loggerTag, " create a table with file sql: ");}
+                        getProject().getLogger().info("The tables are created");
+                        dataSource.closeConnectionDatabase();
+                        return;
+                    }
+                    //TODO more information
+                    messageInfo(getName(), "Error founded");
                 }
+            } catch (MalformedURLException e) {
+                if(levelLog.equalsIgnoreCase(Constant.DEBUG_TAG)){messageDebug(loggerTag, " Error verificate is: " + e.getMessage());}
+                getProject().getLogger().info("Jar not found");
+            } catch (DataSurceException e) {
+                if(levelLog.equalsIgnoreCase(Constant.DEBUG_TAG)){ messageDebug(loggerTag, " Error verificate is: " + e.getMessage());}
+                messageDebug(getName(), "Is verifiched an exeption into DataSurce, the exception is: " + e.getLocalizedMessage());
             }
+        }else{
+            messageInfo(getName(), "Jar not found");
         }
-
-        return true;
     }
 }
