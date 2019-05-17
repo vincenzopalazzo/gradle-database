@@ -4,7 +4,7 @@ The gradle-database is the simple plugin for gradle for operation with database.
 
 ## Getting Started
 
-The project is in versione 0.4 beta and this is reference on the [site gradle](https://plugins.gradle.org/plugin/io.vincentpalazzo.gradledatabase)
+The project is in versione 0.6 beta and this is reference on the [site gradle](https://plugins.gradle.org/plugin/io.vincentpalazzo.gradledatabase)
 
 - Import the dependence
   ```
@@ -15,7 +15,7 @@ The project is in versione 0.4 beta and this is reference on the [site gradle](h
           }
         }
         dependencies {
-          classpath "gradle.plugin.gradleDatabase:database-gradle-plugins:0.4"
+          classpath "gradle.plugin.gradleDatabase:database-gradle-plugins:0.6"
         }
       }
       
