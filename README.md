@@ -29,7 +29,7 @@ The project is in versione 0.4 beta and this is reference on the [site gradle](h
     password = 'yourPassword'
     nameDatabase = 'nameDb'
     driver = 'package driver' //an example org.postgresql.Driver
-    nameJar = 'name dependence' //an example postgres
+    nameJar = 'name dependence' //an example org.postgresql:postgresql:42.2.5
     pathFile = 'src/main/resources/db/schema.sql'
     pathFileInsert = 'src/main/resources/db/insert.sql'
     levelLog = 'info'
