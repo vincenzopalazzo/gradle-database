@@ -21,24 +21,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package task
-
-import io.vincentpalazzo.gradledatabase.task.GradleCreateDatabaseTask
-import junit.framework.TestCase
-import org.gradle.api.Project
-import org.gradle.testfixtures.ProjectBuilder
-import org.junit.Test
+package io.vincentpalazzo.gradledatabase.exception;
 
 /**
  * @author https://github.com/vincenzopalazzo
  */
-class TestTaskCreateTableDB {
+public class DataSurceException extends Exception{
 
-    @Test
-    void testTaskCreateDbFirst(){
-        Project project = ProjectBuilder.builder().build()
-        project.getPlugins().apply'io.vincentpalazzo.gradledatabase'
+    public DataSurceException() {
+    }
 
-        TestCase.assertTrue(project.tasks.createTable instanceof GradleCreateDatabaseTask)
+    public DataSurceException(String message) {
+        super(message);
+    }
+
+    public DataSurceException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public DataSurceException(Throwable cause) {
+        super(cause);
+    }
+
+    public DataSurceException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
     }
 }

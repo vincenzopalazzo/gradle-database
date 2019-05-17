@@ -21,24 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package task
-
-import io.vincentpalazzo.gradledatabase.task.GradleCreateDatabaseTask
-import junit.framework.TestCase
-import org.gradle.api.Project
-import org.gradle.testfixtures.ProjectBuilder
-import org.junit.Test
+package io.vincentpalazzo.gradledatabase;
 
 /**
  * @author https://github.com/vincenzopalazzo
  */
-class TestTaskCreateTableDB {
+public class Constant {
 
-    @Test
-    void testTaskCreateDbFirst(){
-        Project project = ProjectBuilder.builder().build()
-        project.getPlugins().apply'io.vincentpalazzo.gradledatabase'
-
-        TestCase.assertTrue(project.tasks.createTable instanceof GradleCreateDatabaseTask)
-    }
+    public static final String DEBUG_TAG = "debug";
+    public static final String ERROR_TAG = "error";
+    public static final String INFO = "info";
 }

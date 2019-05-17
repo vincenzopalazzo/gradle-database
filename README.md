@@ -4,7 +4,7 @@ The gradle-database is the simple plugin for gradle for operation with database.
 
 ## Getting Started
 
-The project is in versione 0.2 beta and this is reference on the [site gradle](https://plugins.gradle.org/plugin/io.vincentpalazzo.gradledatabase)
+The project is in versione 0.4 beta and this is reference on the [site gradle](https://plugins.gradle.org/plugin/io.vincentpalazzo.gradledatabase)
 
 - Import the dependence
   ```
@@ -15,7 +15,7 @@ The project is in versione 0.2 beta and this is reference on the [site gradle](h
           }
         }
         dependencies {
-          classpath "gradle.plugin.gradleDatabase:database-gradle-plugins:0.3"
+          classpath "gradle.plugin.gradleDatabase:database-gradle-plugins:0.4"
         }
       }
       
@@ -32,8 +32,12 @@ The project is in versione 0.2 beta and this is reference on the [site gradle](h
     nameJar = 'name dependence' //an example postgres
     pathFile = 'src/main/resources/db/schema.sql'
     pathFileInsert = 'src/main/resources/db/insert.sql'
+    levelLog = 'info'
   }
   ```
+  *The loggin is into version alpha and exist level info, debug and error 
+  but the print message for only level selected, an example the level debug print only
+   message debug and not message info, this is temporary*
   
 - Now you can call this task
   - createDatabase

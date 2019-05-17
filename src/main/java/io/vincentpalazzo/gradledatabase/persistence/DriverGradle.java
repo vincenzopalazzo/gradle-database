@@ -21,24 +21,55 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package task
+package io.vincentpalazzo.gradledatabase.persistence;
 
-import io.vincentpalazzo.gradledatabase.task.GradleCreateDatabaseTask
-import junit.framework.TestCase
-import org.gradle.api.Project
-import org.gradle.testfixtures.ProjectBuilder
-import org.junit.Test
+import java.sql.*;
+import java.util.Properties;
+import java.util.logging.Logger;
 
 /**
  * @author https://github.com/vincenzopalazzo
  */
-class TestTaskCreateTableDB {
+public class DriverGradle implements Driver {
 
-    @Test
-    void testTaskCreateDbFirst(){
-        Project project = ProjectBuilder.builder().build()
-        project.getPlugins().apply'io.vincentpalazzo.gradledatabase'
+    private Driver driver;
 
-        TestCase.assertTrue(project.tasks.createTable instanceof GradleCreateDatabaseTask)
+    public DriverGradle(Driver driver) {
+        this.driver = driver;
+    }
+
+    @Override
+    public Connection connect(String url, Properties info) throws SQLException {
+        return driver.connect(url, info);
+    }
+
+    @Override
+    public boolean acceptsURL(String url) throws SQLException {
+        return driver.acceptsURL(url);
+    }
+
+    @Override
+    public DriverPropertyInfo[] getPropertyInfo(String url, Properties info) throws SQLException {
+        return driver.getPropertyInfo(url, info);
+    }
+
+    @Override
+    public int getMajorVersion() {
+        return driver.getMajorVersion();
+    }
+
+    @Override
+    public int getMinorVersion() {
+        return driver.getMinorVersion();
+    }
+
+    @Override
+    public boolean jdbcCompliant() {
+        return driver.jdbcCompliant();
+    }
+
+    @Override
+    public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+        return driver.getParentLogger();
     }
 }

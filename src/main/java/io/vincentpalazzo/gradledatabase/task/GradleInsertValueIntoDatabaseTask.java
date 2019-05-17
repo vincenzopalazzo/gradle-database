@@ -1,67 +1,65 @@
+/**
+ * MIT License
+ *
+ * Copyright (c) 2019 Vincent Palazzo vincenzopalazzodev@gmail.com
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package io.vincentpalazzo.gradledatabase.task;
 
-import io.vincentpalazzo.gradledatabase.exstension.GradleDatabaseExstension;
+import io.vincentpalazzo.gradledatabase.Constant;
+import io.vincentpalazzo.gradledatabase.exception.DataSurceException;
 import io.vincentpalazzo.gradledatabase.persistence.DataSource;
-import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
-
-import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.Set;
 
 /**
  * @author https://github.com/vincenzopalazzo
  */
-public class GradleInsertValueIntoDatabaseTask extends DefaultTask {
+public class GradleInsertValueIntoDatabaseTask extends AbstractTaskGradleDatabase {
 
-    private URLClassLoader classLoaderJar;
+    private final String loggerTag = this.getClass().getCanonicalName();
 
     @TaskAction
     public void createAction() {
-
-        GradleDatabaseExstension project = getProject().getExtensions().findByType(GradleDatabaseExstension.class);
-        String pathFileInsert = project.getPathFileInsert();
-
-        File fileSql = new File(pathFileInsert); //The file with sql createTabe
-
-        String url = project.getUrl();
-        String driverClass = project.getDriver(); //The drive name database is different
-        String username = project.getUsername();
-        String password = project.getPassword();
-        String nameDatabase = project.getNameDatabase();
-        String nameJar = project.getNameJar();
-
+        init();
         DataSource dataSource = new DataSource();
-        findDependecyFileJarForDriver(nameJar);
-        if (dataSource.connectionDatabase(classLoaderJar, driverClass.trim(), url.trim() + nameDatabase.toLowerCase(), username, password)) {
-            if (dataSource.insertIntoDatabaseFromFile(fileSql, false)) {
-                System.out.println("The values are insert into " + nameDatabase.toLowerCase() + " db");
-            }
-            dataSource.closeConnectionDatabase();
-            //TODO more information
-        }
-    }
-
-    private boolean findDependecyFileJarForDriver(String nameJar) {
-        if (nameJar == null || nameJar.isEmpty()) {
-            throw new IllegalArgumentException("The input parameter is null");
-        }
-
-        Set<File> classpath = getProject().getConfigurations().getByName("compileClasspath").getFiles();
-        for(File file : classpath){
-            if(file.getName().contains(nameJar)){
-                System.out.println("Contains dependende " + file.getName());
-                try {
-                    URLClassLoader classLoader = new URLClassLoader(new URL[]{file.toURI().toURL()});
-                    this.classLoaderJar = classLoader;
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
+        if(jar.isPresent()){
+            try {
+                messageInfo(getName(), "Jar finded");
+                classLoaderJar = new URLClassLoader(new URL[]{jar.get().toURI().toURL()});
+                if (dataSource.connectionDatabase(classLoaderJar, driverClass.trim(), url.trim() + nameDatabase.toLowerCase(), username, password)) {
+                    if (dataSource.insertIntoDatabaseFromFile(fileSql, false)) {
+                        System.out.println("The values are insert into " + nameDatabase.toLowerCase() + " db");
+                    }
+                    dataSource.closeConnectionDatabase();
+                    //TODO more information
                 }
+            } catch (MalformedURLException | DataSurceException e) {
+                if(levelLog.equalsIgnoreCase(Constant.DEBUG_TAG)){ messageDebug(loggerTag, " Error verificate is: " + e.getMessage());}
+                messageDebug(getName(), "Is verifiched an exeption into DataSurce, the exception is: " + e.getLocalizedMessage());
             }
+        }else{
+            messageInfo(getName(), "Jar nto found");
         }
 
-        return true;
     }
 }
