@@ -53,7 +53,8 @@ public abstract class AbstractTaskGradleDatabase extends DefaultTask {
     protected void init(){
         GradleDatabaseExstension project = getProject().getExtensions().findByType(GradleDatabaseExstension.class);
         pathFile = project.getPathFile();
-        fileSql = new File(pathFile); //The file with sql createTabe
+        System.out.println("Find: " + getProject().getProjectDir().toURI().getPath() + pathFile);
+        fileSql = new File(getProject().getProjectDir().toURI().getPath() + pathFile); //The file with sql createTabe
         url = project.getUrl();
         driverClass = project.getDriver(); //The drive name database is different
         username = project.getUsername();

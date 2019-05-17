@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'gradleDatabase'
-version '0.4'
+version '0.6'
 
 repositories {
     mavenCentral()
@@ -45,7 +45,7 @@ pluginBundle {
             id = 'io.vincentpalazzo.gradledatabase'
             displayName = 'Gradle Database plugin'
             tags = ['gradle-database', 'gtadle-plugin-database', 'gradle-create-database', 'gradle-drop-database', 'gradle-intert-on-database', 'sql', 'jdbc-gradle']
-            version = '0.4'
+            version = '0.6'
         }
     }
 

@@ -71,9 +71,11 @@ public class GradleCrateTablesIntoDatabeseTask extends AbstractTaskGradleDatabas
             } catch (MalformedURLException e) {
                 if(levelLog.equalsIgnoreCase(Constant.DEBUG_TAG)){messageDebug(loggerTag, " Error verificate is: " + e.getMessage());}
                 getProject().getLogger().info("Jar not found");
+                e.printStackTrace();
             } catch (DataSurceException e) {
                 if(levelLog.equalsIgnoreCase(Constant.DEBUG_TAG)){ messageDebug(loggerTag, " Error verificate is: " + e.getMessage());}
                 messageDebug(getName(), "Is verifiched an exeption into DataSurce, the exception is: " + e.getLocalizedMessage());
+                e.printStackTrace();
             }
         }else{
             messageInfo(getName(), "Jar not found");
