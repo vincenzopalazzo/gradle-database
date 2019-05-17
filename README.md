@@ -50,6 +50,7 @@ The project is in versione 0.4 beta and this is reference on the [site gradle](h
 * [sqltool](https://mvnrepository.com/artifact/org.hsqldb/sqltool/2.2.8) - The framework for some operation sql
 * [gradle](https://gradle.org/) - Dependency Management
 * [JDBC](https://www.oracle.com/technetwork/java/javase/jdbc/index.html) - The framework for some operation sql
+* [jarexec.plugin](https://github.com/lingocoder/jarexec.plugin) - The plugin for find dependency into project main
  
 ## Authors
 
